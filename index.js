@@ -1,29 +1,13 @@
-const { fetchMyIP } = require('./iss');
-const { fetchCoordsByIP } = require('./iss');
-const { fetchISSFlyOverTimes } = require('./iss');
+const { nextISSTimesForMyLocation } = require('./iss');
 
-fetchMyIP((error,ip) => {
+nextISSTimesForMyLocation((error ,result) => {
   if (error) {
-    console.log("It didn't work!" , error);
-    return;
+    console.log("Ran into an error while determining next ISS Times for my Location");
   }
-
-  console.log('It worked! Returned IP: ', ip.ip);
-  // Need to access the value in the ip key-value pair
-  
-  fetchCoordsByIP(ip.ip, (error, coords) => {
-    if (error) {
-      console.log("Ran into an error while determining location", error);
-      return;
-    }
-    
-    console.log("Location is:", coords);
-    fetchISSFlyOverTimes(coords, (error, result) => {
-      if (error) {
-        console.log("Error in determining ISS flyover times!", error);
-      }
-      console.log("ISS Flyover times are:", result);
-      return;
-    });
+  result.forEach(element => {
+    const datetime = new Date(0);
+    datetime.setUTCSeconds(element.risetime);
+    const duration = element.duration;
+    console.log(`Next pass at ${datetime} for ${duration} seconds!`);
   });
 });
