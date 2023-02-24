@@ -18,4 +18,22 @@ const fetchMyIP = function(callback) {
   });
 };
 
-module.exports = { fetchMyIP };
+const fetchCoordsByIP = function (ip, callback) {
+  request('http://ipwho.is/' + ip, (error, response, body) => {
+    if (error) {
+      return callback(error, null);
+    }
+    // Need to use JSON parse otherwise we get the wrong format!
+    const apiOutput = (JSON.parse(body));
+    const longitude = apiOutput['longitude'];
+    const latitude = apiOutput['latitude'];
+    // If we receive an IP, it is assumed that we get nothing as an error!
+    console.log (longitude);
+    console.log(latitude);
+  })
+}
+
+module.exports = { 
+  fetchMyIP,
+  fetchCoordsByIP 
+  };
